@@ -1,7 +1,5 @@
 package edu.neuroginarium.controller;
 
-import javax.validation.Valid;
-
 import edu.neuroginarium.dto.UserDto;
 import edu.neuroginarium.service.RegistrationService;
 import jakarta.validation.Valid;
