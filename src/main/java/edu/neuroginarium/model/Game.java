@@ -15,6 +15,7 @@ import java.util.Set;
 @Accessors(chain = true)
 public class Game {
     public static final int MAX_PLAYERS_CNT = 7;
+    public static final int MIN_PLAYERS_CNT = 4;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

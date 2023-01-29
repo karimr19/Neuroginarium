@@ -5,6 +5,7 @@ import edu.neuroginarium.model.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
@@ -16,6 +17,8 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                     "ORDER BY g.creation_datetime",
             nativeQuery = true)
     Long findOldestCreatedGameId();
+
+    List<Game> findAllByPlayersCntGreaterThanEqual(int playersCnt);
 
     Optional<Game> findByToken(String token);
 
