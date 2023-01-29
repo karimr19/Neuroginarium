@@ -1,6 +1,6 @@
 package edu.neuroginarium.service;
 
-import edu.neuroginarium.repository.exception.PlayersCntIsMaxException;
+import edu.neuroginarium.exception.PlayersCntIsMaxException;
 import edu.neuroginarium.model.Game;
 import edu.neuroginarium.model.GameStatus;
 import edu.neuroginarium.model.Player;
@@ -42,6 +42,9 @@ public class GameService {
 
     private Player buildPlayer(Long userId, Game game) {
         game.setPlayersCnt(game.getPlayersCnt() + 1);
+        if(game.getIsAutoGame() && game.getPlayersCnt() == Game.MAX_PLAYERS_CNT) {
+            startGame(game);
+        }
         return playerRepository.save(new Player()
                 .setGame(game)
                 .setUserId(userId));
@@ -61,6 +64,10 @@ public class GameService {
 
     public void startGame(String gameToken) {
         Game game = gameRepository.findByTokenOrThrow(gameToken);
+        startGame(game);
+    }
+
+    private void startGame(Game game) {
         game.setStatus(GameStatus.STARTED);
         gameRepository.save(game);
     }

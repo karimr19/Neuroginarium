@@ -1,4 +1,4 @@
-package edu.neuroginarium.repository.exception;
+package edu.neuroginarium.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(Class<?> clazz, Long id) {
