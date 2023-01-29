@@ -1,4 +1,4 @@
-package edu.neuroginarium.exception;
+package edu.neuroginarium.repository.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(Class<?> clazz, Long id) {
@@ -6,5 +6,9 @@ public class NotFoundException extends RuntimeException {
     }
     public NotFoundException(Class<?> clazz, String email) {
         super(clazz.getName() + " not found for email: " + email);
+    }
+
+    public NotFoundException(String token) {
+        super("Game not found for token: " + token);
     }
 }

@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import edu.neuroginarium.dto.UserDto;
-import edu.neuroginarium.exception.EmailConfirmationFailedException;
-import edu.neuroginarium.exception.NotFoundException;
+import edu.neuroginarium.repository.exception.EmailConfirmationFailedException;
+import edu.neuroginarium.repository.exception.NotFoundException;
 import edu.neuroginarium.model.EmailToken;
 import edu.neuroginarium.model.User;
 import edu.neuroginarium.repository.EmailTokenRepository;

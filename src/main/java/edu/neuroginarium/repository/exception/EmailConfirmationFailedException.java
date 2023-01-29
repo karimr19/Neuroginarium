@@ -1,4 +1,4 @@
-package edu.neuroginarium.exception;
+package edu.neuroginarium.repository.exception;
 
 public class EmailConfirmationFailedException extends RuntimeException {
     public EmailConfirmationFailedException(String email) {

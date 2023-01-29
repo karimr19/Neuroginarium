@@ -1,4 +1,4 @@
-package edu.neuroginarium.exception;
+package edu.neuroginarium.repository.exception;
 
 import edu.neuroginarium.model.Error;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,12 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(EmailConfirmationFailedException.class)
     public ResponseEntity<Error> handleEmailConfirmationFailedException(EmailConfirmationFailedException ex) {
+        var status = HttpStatus.FORBIDDEN;
+        return ResponseEntity.status(status).body(new Error(status.toString(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(PlayersCntIsMaxException.class)
+    public ResponseEntity<Error> handlePlayersCntIsMaxException(PlayersCntIsMaxException ex) {
         var status = HttpStatus.FORBIDDEN;
         return ResponseEntity.status(status).body(new Error(status.toString(), ex.getMessage()));
     }

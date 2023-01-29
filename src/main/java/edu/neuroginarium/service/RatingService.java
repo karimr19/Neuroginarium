@@ -1,10 +1,9 @@
 package edu.neuroginarium.service;
 
 import edu.neuroginarium.dto.UserEmailRatingDto;
-import edu.neuroginarium.exception.NotFoundException;
+import edu.neuroginarium.repository.exception.NotFoundException;
 import edu.neuroginarium.model.User;
 import edu.neuroginarium.repository.UserRepository;
-import edu.neuroginarium.utils.UserDtoMapper;
 import edu.neuroginarium.utils.UserEmailRatingDtoMapper;
 import lombok.RequiredArgsConstructor;
 
