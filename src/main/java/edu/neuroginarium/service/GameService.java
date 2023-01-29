@@ -7,6 +7,7 @@ import edu.neuroginarium.model.Player;
 import edu.neuroginarium.repository.GameRepository;
 import edu.neuroginarium.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,5 +71,11 @@ public class GameService {
     private void startGame(Game game) {
         game.setStatus(GameStatus.STARTED);
         gameRepository.save(game);
+    }
+
+    @Scheduled(cron = "*/2 * * * *")
+    private void startNotStartedReadyGames() {
+        gameRepository.findAllByPlayersCntGreaterThanEqual(Game.MIN_PLAYERS_CNT)
+                .forEach(this::startGame);
     }
 }
