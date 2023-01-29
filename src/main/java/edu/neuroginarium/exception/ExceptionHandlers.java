@@ -1,4 +1,4 @@
-package edu.neuroginarium.repository.exception;
+package edu.neuroginarium.exception;
 
 import edu.neuroginarium.model.Error;
 import org.springframework.http.HttpStatus;
