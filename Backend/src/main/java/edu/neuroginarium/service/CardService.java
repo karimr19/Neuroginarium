@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CardService {
+    private final static Integer GAME_ROUNDS_CNT = 3;
+    private final static Integer CARDS_FOR_PLAYER_CNT = 6 + 3;
     // TODO поменять baseUrl
     private final static String SERVER_URL = "http://localhost:8080";
     private final CardRepository cardRepository;
@@ -48,7 +50,8 @@ public class CardService {
     public List<Card> generateCards(Game game) {
         WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec =
                 (WebClient.UriSpec<WebClient.RequestBodySpec>) webClient.get();
-        WebClient.RequestBodySpec bodySpec = uriSpec.uri("/pictures");
+        int cardsCnt = game.getPlayersCnt() * CARDS_FOR_PLAYER_CNT;
+        WebClient.RequestBodySpec bodySpec = uriSpec.uri("/pictures/" + cardsCnt);
         var headersSpec = bodySpec.bodyValue("");
         Mono<String> response = headersSpec.exchangeToMono(r -> {
             if (r.statusCode().equals(HttpStatus.OK)) {
@@ -67,5 +70,6 @@ public class CardService {
                 .map(image -> new Card().setGame(game)
                         .setImage(image))
                 .collect(Collectors.toList());
+        // gameRepo.save(game) ???
     }
 }
