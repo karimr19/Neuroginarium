@@ -18,6 +18,7 @@ import java.util.UUID;
 public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final CardService cardService;
     public Long findGame(Long userId) {
         Long createdGameId = gameRepository.findOldestCreatedGameId();
         var optGame = gameRepository.findById(createdGameId);
@@ -34,11 +35,14 @@ public class GameService {
     }
 
     private Game buildGame(boolean isAutoGame, String token) {
-        return new Game()
+        var game = new Game()
                 .setIsAutoGame(isAutoGame)
                 .setStatus(GameStatus.CREATED)
                 .setCreationDateTime(LocalDateTime.now())
                 .setToken(token);
+        gameRepository.save(game);
+        cardService.generateCards(game);
+        return game;
     }
 
     private Player buildPlayer(Long userId, Game game) {

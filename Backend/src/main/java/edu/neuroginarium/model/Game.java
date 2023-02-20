@@ -33,4 +33,7 @@ public class Game {
 
     @Nullable
     private String token;
+
+    @OneToMany(mappedBy = "game")
+    private Set<Card> cards;
 }
