@@ -16,6 +16,11 @@ public class Card {
 
     private String image;
 
+    //    @OneToOne
+//    @JoinColumn(name = "player_id", nullable = false)
+//    private Player player;
+    private Long playerId;
+
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
