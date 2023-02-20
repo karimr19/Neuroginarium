@@ -1,6 +1,9 @@
 package edu.neuroginarium.service;
 
+import edu.neuroginarium.exception.InternalException;
+import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
+import edu.neuroginarium.model.Card;
 import edu.neuroginarium.model.Game;
 import edu.neuroginarium.model.GameStatus;
 import edu.neuroginarium.model.Player;
@@ -11,7 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,5 +86,23 @@ public class GameService {
     private void startNotStartedReadyGames() {
         gameRepository.findAllByPlayersCntGreaterThanEqual(Game.MIN_PLAYERS_CNT)
                 .forEach(this::startGame);
+    }
+
+    public List<Card> getPlayerCards(Long gameId, Long playerId) {
+        var optGame = gameRepository.findById(gameId);
+        if (optGame.isEmpty()) {
+            throw new NotFoundException(optGame.getClass(), gameId);
+        }
+        if (!gameContainsPlayerWithId(optGame.get(), playerId)) {
+            throw new InternalException("GAME[" + gameId + "] doesn't contain PLAYER[" + playerId + "]");
+        }
+        // TODO get player cards
+    }
+
+    private Boolean gameContainsPlayerWithId(Game game, Long playerId) {
+        return game.getPlayers().stream()
+                .map(Player::getId)
+                .collect(Collectors.toSet())
+                .contains(playerId);
     }
 }
