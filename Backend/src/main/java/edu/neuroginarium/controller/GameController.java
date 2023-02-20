@@ -1,8 +1,11 @@
 package edu.neuroginarium.controller;
 
+import edu.neuroginarium.model.Card;
 import edu.neuroginarium.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/game")
@@ -28,5 +31,10 @@ public class GameController {
     @PostMapping("/start")
     public void startGame(@RequestParam(name = "gameToken") String gameToken) {
         gameService.startGame(gameToken);
+    }
+
+    @GetMapping(value = "/{id}/cards/{player_id}")
+    public List<Card> getPlayerCards(@PathVariable("id") Long gameId, @PathVariable("player_id") Long playerId) {
+        return gameService.getPlayerCards(gameId, playerId);
     }
 }
