@@ -110,7 +110,7 @@ public class GameService {
         if (!gameContainsPlayerWithId(optGame.get(), playerId)) {
             throw new InternalException("GAME[" + gameId + "] doesn't contain PLAYER[" + playerId + "]");
         }
-        // TODO get player cards
+        return cardRepository.findAllByPlayerId(playerId);
     }
 
     private Boolean gameContainsPlayerWithId(Game game, Long playerId) {
