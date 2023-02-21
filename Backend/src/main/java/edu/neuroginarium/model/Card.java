@@ -24,4 +24,13 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
+
+    private CardStatus status = CardStatus.IN_CARD_DECK;
+
+    public void giveCardToPlayer() {
+        if (this.status == CardStatus.ON_HANDS) {
+            return;
+        }
+        this.setStatus(CardStatus.ON_HANDS);
+    }
 }

@@ -91,6 +91,9 @@ public class GameService {
         int cardsI = 0;
         for (int i = 0; i < game.getPlayersCnt(); ++i) {
             for (int j = 0; j < cardsForPlayerCnt; ++j) {
+                if (j < CardService.CARDS_ON_HANDS_CNT) {
+                    cards.get(cardsI).giveCardToPlayer();
+                }
                 cardRepository.save(cards.get(cardsI++).setPlayerId(players.get(i).getId()));
             }
         }
