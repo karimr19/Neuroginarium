@@ -22,8 +22,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class CardService {
+    public final static Integer CARDS_ON_HANDS_CNT = 7;
     private final static Integer GAME_ROUNDS_CNT = 3;
-    private final static Integer CARDS_FOR_PLAYER_CNT = 6 + 3;
+    private final static Integer CARDS_FOR_PLAYER_CNT = CARDS_ON_HANDS_CNT - 1 + GAME_ROUNDS_CNT;
     // TODO поменять baseUrl
     private final static String SERVER_URL = "http://localhost:8080";
     private final CardRepository cardRepository;
