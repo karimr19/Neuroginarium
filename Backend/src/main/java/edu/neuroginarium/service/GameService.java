@@ -3,12 +3,10 @@ package edu.neuroginarium.service;
 import edu.neuroginarium.exception.InternalException;
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
-import edu.neuroginarium.model.Card;
-import edu.neuroginarium.model.Game;
-import edu.neuroginarium.model.GameStatus;
-import edu.neuroginarium.model.Player;
+import edu.neuroginarium.model.*;
 import edu.neuroginarium.repository.CardRepository;
 import edu.neuroginarium.repository.GameRepository;
+import edu.neuroginarium.repository.GameRoundRepository;
 import edu.neuroginarium.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,6 +24,7 @@ public class GameService {
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
     private final CardService cardService;
+    private final GameRoundRepository gameRoundRepository;
     public Long findGame(Long userId) {
         Long createdGameId = gameRepository.findOldestCreatedGameId();
         var optGame = gameRepository.findById(createdGameId);
@@ -81,8 +80,16 @@ public class GameService {
     private void startGame(Game game) {
         List<Card> cards = cardService.generateCards(game);
         setCardsPlayerId(game, cards);
+        addInitialRound(game);
         game.setStatus(GameStatus.STARTED);
         gameRepository.save(game);
+    }
+
+    private void addInitialRound(Game game) {
+        var round = new GameRound().setGame(game)
+                .setAssociationCreatorId(game.getPlayers().stream()
+                        .findFirst().get().getId());
+        gameRoundRepository.save(round);
     }
 
     private void setCardsPlayerId(Game game, List<Card> cards) {

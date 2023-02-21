@@ -36,4 +36,7 @@ public class Game {
 
     @OneToMany(mappedBy = "game")
     private Set<Card> cards;
+
+    @OneToMany(mappedBy = "game")
+    private Set<GameRound> rounds;
 }
