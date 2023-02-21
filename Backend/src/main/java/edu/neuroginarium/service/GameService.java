@@ -3,10 +3,7 @@ package edu.neuroginarium.service;
 import edu.neuroginarium.exception.InternalException;
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
-import edu.neuroginarium.model.Card;
-import edu.neuroginarium.model.Game;
-import edu.neuroginarium.model.GameStatus;
-import edu.neuroginarium.model.Player;
+import edu.neuroginarium.model.*;
 import edu.neuroginarium.repository.CardRepository;
 import edu.neuroginarium.repository.GameRepository;
 import edu.neuroginarium.repository.PlayerRepository;
@@ -113,7 +110,7 @@ public class GameService {
         if (!gameContainsPlayerWithId(optGame.get(), playerId)) {
             throw new InternalException("GAME[" + gameId + "] doesn't contain PLAYER[" + playerId + "]");
         }
-        return cardRepository.findAllByPlayerId(playerId);
+        return cardRepository.findAllByPlayerIdAndStatus(playerId, CardStatus.ON_HANDS);
     }
 
     private Boolean gameContainsPlayerWithId(Game game, Long playerId) {
