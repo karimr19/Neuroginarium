@@ -1,6 +1,7 @@
 package edu.neuroginarium.controller;
 
 import edu.neuroginarium.model.Card;
+import edu.neuroginarium.model.GameRound;
 import edu.neuroginarium.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +37,10 @@ public class GameController {
     @GetMapping(value = "/{id}/cards/{player_id}")
     public List<Card> getPlayerCards(@PathVariable("id") Long gameId, @PathVariable("player_id") Long playerId) {
         return gameService.getPlayerCards(gameId, playerId);
+    }
+
+    @GetMapping(value = "/{id}/rounds/current")
+    public GameRound getCurrentRound(@PathVariable("id") Long gameId) {
+        return gameService.getCurrentRound(gameId);
     }
 }

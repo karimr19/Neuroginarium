@@ -31,9 +31,14 @@ public class Game {
 
     private LocalDateTime creationDateTime;
 
+    private int round;
+
     @Nullable
     private String token;
 
     @OneToMany(mappedBy = "game")
     private Set<Card> cards;
+
+    @OneToMany(mappedBy = "game")
+    private Set<GameRound> rounds;
 }

@@ -23,6 +23,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     Optional<Game> findByToken(String token);
 
     default Game findByTokenOrThrow(String token) {
-        return findByToken(token).orElseThrow(() -> new NotFoundException(token));
+        return findByToken(token).orElseThrow(() -> new NotFoundException("Game not found for token: " + token));
     }
 }

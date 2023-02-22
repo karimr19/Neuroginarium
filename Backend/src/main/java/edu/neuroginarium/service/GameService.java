@@ -3,13 +3,8 @@ package edu.neuroginarium.service;
 import edu.neuroginarium.exception.InternalException;
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
-import edu.neuroginarium.model.Card;
-import edu.neuroginarium.model.Game;
-import edu.neuroginarium.model.GameStatus;
-import edu.neuroginarium.model.Player;
-import edu.neuroginarium.repository.CardRepository;
-import edu.neuroginarium.repository.GameRepository;
-import edu.neuroginarium.repository.PlayerRepository;
+import edu.neuroginarium.model.*;
+import edu.neuroginarium.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +22,8 @@ public class GameService {
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
     private final CardService cardService;
+    private final GameRoundRepository gameRoundRepository;
+    private final ModeratorQueueOrderItemRepository moderatorQueueOrderItemRepository;
     public Long findGame(Long userId) {
         Long createdGameId = gameRepository.findOldestCreatedGameId();
         var optGame = gameRepository.findById(createdGameId);
@@ -81,8 +79,38 @@ public class GameService {
     private void startGame(Game game) {
         List<Card> cards = cardService.generateCards(game);
         setCardsPlayerId(game, cards);
+        setModeratorQueueOrder(game);
+        addInitialRound(game);
         game.setStatus(GameStatus.STARTED);
         gameRepository.save(game);
+    }
+
+    private void setModeratorQueueOrder(Game game) {
+        AtomicInteger order = new AtomicInteger();
+        game.getPlayers().forEach(player ->
+                moderatorQueueOrderItemRepository.save(new ModeratorQueueOrderItem()
+                        .setPlayerId(player.getId())
+                        .setOrder(order.getAndIncrement())
+                        .setGameId(game.getId())
+                ));
+    }
+
+    private void addInitialRound(Game game) {
+        var round = new GameRound().setGame(game)
+                .setAssociationCreatorId(
+                        findPlayerIdByGameIdAndOrder(game.getId(), ModeratorQueueOrderItem.INITIAL_ORDER)
+                );
+        gameRoundRepository.save(round);
+    }
+
+    private Long findPlayerIdByGameIdAndOrder(Long gameId, int order) {
+        var optModeratorQueueOrderItem = moderatorQueueOrderItemRepository
+                .findByGameIdAndOrder(gameId, order);
+        if (optModeratorQueueOrderItem.isEmpty()) {
+            throw new NotFoundException("ModeratorQueueOrderItem not found for gameId = " + gameId +
+                    " and order = " + order);
+        }
+        return optModeratorQueueOrderItem.get().getPlayerId();
     }
 
     private void setCardsPlayerId(Game game, List<Card> cards) {
@@ -121,5 +149,13 @@ public class GameService {
                 .map(Player::getId)
                 .collect(Collectors.toSet())
                 .contains(playerId);
+    }
+
+    public GameRound getCurrentRound(Long gameId) {
+        var optGameRound = gameRoundRepository.findByStatusNot(GameRoundStatus.FINISHED);
+        if (optGameRound.isEmpty()) {
+            throw new InternalException("all GAME_ROUNDs of GAME[" + gameId + "] are finished");
+        }
+        return optGameRound.get();
     }
 }
