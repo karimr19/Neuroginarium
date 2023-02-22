@@ -43,4 +43,10 @@ public class GameController {
     public GameRound getCurrentRound(@PathVariable("id") Long gameId) {
         return gameService.getCurrentRound(gameId);
     }
+
+    @PostMapping("/rounds/{round_id}/make_association")
+    public void startGame(@PathVariable("round_id") Long roundId,
+                          @RequestParam(name = "association") String association) {
+        gameService.setAssociation(roundId, association);
+    }
 }
