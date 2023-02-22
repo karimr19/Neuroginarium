@@ -158,4 +158,15 @@ public class GameService {
         }
         return optGameRound.get();
     }
+
+    public void setAssociation(Long roundId, String association) {
+        var optRound = gameRoundRepository.findById(roundId);
+        if (optRound.isEmpty()) {
+            throw new NotFoundException(GameRound.class, roundId);
+        }
+        var round = optRound.get();
+        round.setAssociation(association);
+        round.setStatus(GameRoundStatus.ASSOCIATION_GIVEN);
+        gameRoundRepository.save(round);
+    }
 }
