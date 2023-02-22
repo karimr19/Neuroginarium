@@ -31,6 +31,8 @@ public class Game {
 
     private LocalDateTime creationDateTime;
 
+    private int round;
+
     @Nullable
     private String token;
 
