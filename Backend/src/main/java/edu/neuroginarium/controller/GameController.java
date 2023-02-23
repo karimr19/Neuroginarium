@@ -58,7 +58,13 @@ public class GameController {
     }
 
     @GetMapping(value = "/{id}/cards_on_table")
-    public GameRound getCardsOnTable(@PathVariable("id") Long gameId) {
+    public List<Card> getCardsOnTable(@PathVariable("id") Long gameId) {
         return gameService.getCardsOnTable(gameId);
+    }
+
+    @PostMapping("/vote")
+    public void vote(@RequestParam(name = "player_id") Long playerId,
+                     @RequestParam(name = "card_id") Long cardId) {
+        gameService.vote(playerId, cardId);
     }
 }

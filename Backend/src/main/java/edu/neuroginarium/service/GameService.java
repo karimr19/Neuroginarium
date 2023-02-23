@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -18,12 +19,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GameService {
+    public static final Long CARD_GENERATOR_PLAYER_ID = -1L;
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
     private final CardService cardService;
     private final GameRoundRepository gameRoundRepository;
     private final ModeratorQueueOrderItemRepository moderatorQueueOrderItemRepository;
+    private final VoteRepository voteRepository;
     public Long findGame(Long userId) {
         Long createdGameId = gameRepository.findOldestCreatedGameId();
         var optGame = gameRepository.findById(createdGameId);
@@ -173,6 +176,7 @@ public class GameService {
 
     private void addGeneratedCardOnTable(String association, Game game) {
         var extraCard = cardService.getCardByAssociation(association, game);
+        extraCard.setId(CARD_GENERATOR_PLAYER_ID);
         extraCard.putCardOnTable();
         cardRepository.save(extraCard);
     }
@@ -184,5 +188,15 @@ public class GameService {
 
     public List<Card> getCardsOnTable(Long gameId) {
         return cardRepository.findAllByGameAndStatus(gameRepository.findByIdOrThrow(gameId), CardStatus.ON_TABLE);
+    }
+
+    public void vote(Long playerId, Long cardId) {
+        var card = cardRepository.findByIdOrThrow(cardId);
+        if (Objects.equals(card.getPlayerId(), playerId)) {
+            throw new InternalException("Player can't vote for his cart! PLAYER[" + playerId + "]");
+        }
+
+        voteRepository.save(new Vote().setCardId(cardId)
+                .setPlayerId(playerId));
     }
 }
