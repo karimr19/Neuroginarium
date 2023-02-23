@@ -45,8 +45,15 @@ public class GameController {
     }
 
     @PostMapping("/rounds/{round_id}/make_association")
-    public void startGame(@PathVariable("round_id") Long roundId,
-                          @RequestParam(name = "association") String association) {
-        gameService.setAssociation(roundId, association);
+    public void giveAssociation(@PathVariable("round_id") Long roundId,
+                                @RequestParam(name = "association") String association,
+                                @RequestParam(name = "card_id") Long cardId) {
+        gameService.makeAssociation(roundId, association, cardId);
+    }
+
+    @PostMapping("/rounds/{round_id}/give_card")
+    public void giveCard(@PathVariable("round_id") Long roundId,
+                         @RequestParam(name = "card_id") Long cardId) {
+        gameService.giveCard(cardId);
     }
 }

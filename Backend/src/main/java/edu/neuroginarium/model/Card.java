@@ -33,4 +33,11 @@ public class Card {
         }
         this.setStatus(CardStatus.ON_HANDS);
     }
+
+    public void putCardOnTable() {
+        if (this.status == CardStatus.ON_TABLE) {
+            return;
+        }
+        this.setStatus(CardStatus.ON_TABLE);
+    }
 }

@@ -73,4 +73,24 @@ public class CardService {
                 .collect(Collectors.toList());
         // gameRepo.save(game) ???
     }
+
+    public Card getCardByAssociation(String association, Game game) {
+        WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec =
+                (WebClient.UriSpec<WebClient.RequestBodySpec>) webClient.get();
+        WebClient.RequestBodySpec bodySpec = uriSpec.uri("/pictures?association=" + association);
+        var headersSpec = bodySpec.bodyValue("");
+        Mono<String> response = headersSpec.exchangeToMono(r -> {
+            if (r.statusCode().equals(HttpStatus.OK)) {
+                return r.bodyToMono(String.class);
+            } else if (r.statusCode().is4xxClientError()) {
+                return Mono.just("Error response");
+            } else {
+                return r.createException()
+                        .flatMap(Mono::error);
+            }
+        });
+        String content = response.block();
+        return new Card().setGame(game)
+                .setImage(content);
+    }
 }

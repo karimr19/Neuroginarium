@@ -159,14 +159,26 @@ public class GameService {
         return optGameRound.get();
     }
 
-    public void setAssociation(Long roundId, String association) {
-        var optRound = gameRoundRepository.findById(roundId);
-        if (optRound.isEmpty()) {
-            throw new NotFoundException(GameRound.class, roundId);
-        }
-        var round = optRound.get();
+    public void makeAssociation(Long roundId, String association, Long cardId) {
+        giveCard(cardId);
+        var round = gameRoundRepository.findByIdOrThrow(roundId);
         round.setAssociation(association);
+
+        addGeneratedCardOnTable(association, round.getGame());
+
+        round.setCardId(cardId);
         round.setStatus(GameRoundStatus.ASSOCIATION_GIVEN);
         gameRoundRepository.save(round);
+    }
+
+    private void addGeneratedCardOnTable(String association, Game game) {
+        var extraCard = cardService.getCardByAssociation(association, game);
+        extraCard.putCardOnTable();
+        cardRepository.save(extraCard);
+    }
+
+    public void giveCard(Long cardId) {
+        var card = cardRepository.findByIdOrThrow(cardId);
+        card.putCardOnTable();
     }
 }
