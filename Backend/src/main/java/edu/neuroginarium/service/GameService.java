@@ -181,4 +181,8 @@ public class GameService {
         var card = cardRepository.findByIdOrThrow(cardId);
         card.putCardOnTable();
     }
+
+    public List<Card> getCardsOnTable(Long gameId) {
+        return cardRepository.findAllByGameAndStatus(gameRepository.findByIdOrThrow(gameId), CardStatus.ON_TABLE);
+    }
 }

@@ -2,6 +2,8 @@ package edu.neuroginarium.repository;
 
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.model.Card;
+import edu.neuroginarium.model.CardStatus;
+import edu.neuroginarium.model.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,4 +18,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
         }
         return optCard.get();
     }
+
+    List<Card> findAllByGameAndStatus(Game game, CardStatus status);
 }

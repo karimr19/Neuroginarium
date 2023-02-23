@@ -56,4 +56,9 @@ public class GameController {
                          @RequestParam(name = "card_id") Long cardId) {
         gameService.giveCard(cardId);
     }
+
+    @GetMapping(value = "/{id}/cards_on_table")
+    public GameRound getCardsOnTable(@PathVariable("id") Long gameId) {
+        return gameService.getCardsOnTable(gameId);
+    }
 }
