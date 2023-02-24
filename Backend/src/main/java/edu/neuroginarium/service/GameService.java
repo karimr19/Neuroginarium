@@ -190,7 +190,7 @@ public class GameService {
         return cardRepository.findAllByGameAndStatus(gameRepository.findByIdOrThrow(gameId), CardStatus.ON_TABLE);
     }
 
-    public void vote(Long playerId, Long cardId, Long roundId) {
+    public Boolean vote(Long playerId, Long cardId, Long roundId) {
         var card = cardRepository.findByIdOrThrow(cardId);
         if (Objects.equals(card.getPlayerId(), playerId)) {
             throw new InternalException("Player can't vote for his cart! PLAYER[" + playerId + "]");
@@ -199,6 +199,12 @@ public class GameService {
         voteRepository.save(new Vote().setCardId(cardId)
                 .setPlayerId(playerId)
                 .setRoundId(roundId));
+
+        return isVotingFinished(roundId, card.getGame());
+    }
+
+    private Boolean isVotingFinished(Long roundId, Game game) {
+        return voteRepository.findAllByRoundId(roundId).size() + 1 == game.getPlayersCnt();
     }
 
     public String getAssociation(Long gameRoundId) {
