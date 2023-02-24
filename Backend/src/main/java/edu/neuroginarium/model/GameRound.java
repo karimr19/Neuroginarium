@@ -25,4 +25,8 @@ public class GameRound {
     private Game game;
 
     Long cardId;
+
+    public void votingMade() {
+        status = GameRoundStatus.VOTING_MADE;
+    }
 }

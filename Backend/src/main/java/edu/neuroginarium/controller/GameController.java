@@ -1,5 +1,6 @@
 package edu.neuroginarium.controller;
 
+import edu.neuroginarium.dto.PlayerPointsDto;
 import edu.neuroginarium.model.Card;
 import edu.neuroginarium.model.GameRound;
 import edu.neuroginarium.model.Vote;
@@ -78,5 +79,10 @@ public class GameController {
     @GetMapping(value = "/rounds/{round_id}/get_votes")
     public List<Vote> getVotes(@PathVariable("round_id") Long roundId) {
         return gameService.getVotes(roundId);
+    }
+
+    @GetMapping(value = "/rounds/{round_id}/get_points")
+    public List<PlayerPointsDto> getRoundPoints(@PathVariable("round_id") Long roundId) {
+        return gameService.getRoundPoints(roundId);
     }
 }
