@@ -64,10 +64,10 @@ public class GameController {
     }
 
     @PostMapping("/rounds/{round_id}/vote")
-    public void vote(@PathVariable("round_id") Long roundId,
-                     @RequestParam(name = "player_id") Long playerId,
-                     @RequestParam(name = "card_id") Long cardId) {
-        gameService.vote(playerId, cardId, roundId);
+    public Boolean vote(@PathVariable("round_id") Long roundId,
+                        @RequestParam(name = "player_id") Long playerId,
+                        @RequestParam(name = "card_id") Long cardId) {
+        return gameService.vote(playerId, cardId, roundId);
     }
 
     @GetMapping(value = "/rounds/{round_id}/get_association")
