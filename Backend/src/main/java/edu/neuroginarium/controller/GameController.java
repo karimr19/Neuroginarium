@@ -2,6 +2,7 @@ package edu.neuroginarium.controller;
 
 import edu.neuroginarium.model.Card;
 import edu.neuroginarium.model.GameRound;
+import edu.neuroginarium.model.Vote;
 import edu.neuroginarium.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +73,10 @@ public class GameController {
     @GetMapping(value = "/rounds/{round_id}/get_association")
     public String getAssociation(@PathVariable("round_id") Long roundId) {
         return gameService.getAssociation(roundId);
+    }
+
+    @GetMapping(value = "/rounds/{round_id}/get_votes")
+    public List<Vote> getVotes(@PathVariable("round_id") Long roundId) {
+        return gameService.getVotes(roundId);
     }
 }

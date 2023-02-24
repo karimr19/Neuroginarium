@@ -205,4 +205,7 @@ public class GameService {
         return gameRoundRepository.findByIdOrThrow(gameRoundId).getAssociation();
     }
 
+    public List<Vote> getVotes(Long roundId) {
+        return voteRepository.findAllByRoundId(roundId);
+    }
 }
