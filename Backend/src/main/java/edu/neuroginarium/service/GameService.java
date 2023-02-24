@@ -1,5 +1,6 @@
 package edu.neuroginarium.service;
 
+import edu.neuroginarium.dto.PlayerPointsDto;
 import edu.neuroginarium.exception.InternalException;
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -200,7 +202,12 @@ public class GameService {
                 .setPlayerId(playerId)
                 .setRoundId(roundId));
 
-        return isVotingFinished(roundId, card.getGame());
+        var isVotingFinished = isVotingFinished(roundId, card.getGame());
+        if (isVotingFinished) {
+            var round = gameRoundRepository.findByIdOrThrow(roundId);
+            round.votingMade();
+        }
+        return isVotingFinished;
     }
 
     private Boolean isVotingFinished(Long roundId, Game game) {
@@ -213,5 +220,40 @@ public class GameService {
 
     public List<Vote> getVotes(Long roundId) {
         return voteRepository.findAllByRoundId(roundId);
+    }
+
+    public List<PlayerPointsDto> getRoundPoints(Long roundId) {
+        List<Vote> votes = voteRepository.findAllByRoundId(roundId);
+        var round = gameRoundRepository.findByIdOrThrow(roundId);
+        Long moderatorCardId = round.getCardId();
+        var playerIdPoints = new HashMap<Long, Integer>();
+        setPointsForGuesses(votes, moderatorCardId, playerIdPoints);
+        setPointsForCards(votes, moderatorCardId, round.getAssociationCreatorId(), playerIdPoints);
+        return playerIdPoints.entrySet().stream()
+                .map(idPoints -> new PlayerPointsDto()
+                        .setPlayerId(idPoints.getKey())
+                        .setPoints(idPoints.getValue())
+                ).toList();
+    }
+
+    private static void setPointsForCards(List<Vote> votes, Long moderatorCardId, Long moderatorId,
+                                          HashMap<Long, Integer> playerIdPoints) {
+        votes.stream()
+                .filter(vote -> !Objects.equals(vote.getCardId(), moderatorCardId))
+                .forEach(vote -> playerIdPoints.put(vote.getCardId(), playerIdPoints.get(vote.getPlayerId()) + 1));
+        boolean allGuessed = votes.stream().allMatch(vote -> Objects.equals(vote.getCardId(), moderatorCardId));
+        boolean noneGuessed = votes.stream().noneMatch(vote -> Objects.equals(vote.getCardId(), moderatorCardId));
+        int moderatorPoints = 0;
+        if (!allGuessed && !noneGuessed) {
+            moderatorPoints += 3;
+            moderatorPoints += votes.stream().filter(vote -> Objects.equals(vote.getCardId(), moderatorCardId)).count();
+        }
+        playerIdPoints.put(moderatorId, moderatorPoints);
+    }
+
+    private static void setPointsForGuesses(List<Vote> votes, Long moderatorCardId, HashMap<Long, Integer> playerIdPoints) {
+        votes.stream()
+                .filter(vote -> Objects.equals(vote.getCardId(), moderatorCardId))
+                .forEach(vote -> playerIdPoints.put(vote.getPlayerId(), 3));
     }
 }
