@@ -17,7 +17,9 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    Long playerId;
+    private Long playerId;
 
-    Long cardId;
+    private Long cardId;
+
+    private Long roundId;
 }

@@ -62,9 +62,15 @@ public class GameController {
         return gameService.getCardsOnTable(gameId);
     }
 
-    @PostMapping("/vote")
-    public void vote(@RequestParam(name = "player_id") Long playerId,
+    @PostMapping("/rounds/{round_id}/vote")
+    public void vote(@PathVariable("round_id") Long roundId,
+                     @RequestParam(name = "player_id") Long playerId,
                      @RequestParam(name = "card_id") Long cardId) {
-        gameService.vote(playerId, cardId);
+        gameService.vote(playerId, cardId, roundId);
+    }
+
+    @GetMapping(value = "/rounds/{round_id}/get_association")
+    public String getAssociation(@PathVariable("round_id") Long roundId) {
+        return gameService.getAssociation(roundId);
     }
 }
