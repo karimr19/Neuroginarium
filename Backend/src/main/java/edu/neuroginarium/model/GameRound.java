@@ -27,6 +27,10 @@ public class GameRound {
     Long cardId;
 
     public void votingMade() {
-        status = GameRoundStatus.VOTING_MADE;
+        this.setStatus(GameRoundStatus.VOTING_MADE);
+    }
+
+    public void finish() {
+        this.setStatus(GameRoundStatus.FINISHED);
     }
 }

@@ -41,4 +41,8 @@ public class Game {
 
     @OneToMany(mappedBy = "game")
     private Set<GameRound> rounds;
+
+    public void startNewRound() {
+        this.setRound(round + 1);
+    }
 }
