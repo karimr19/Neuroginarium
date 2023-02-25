@@ -273,4 +273,8 @@ public class GameService {
                 .filter(vote -> Objects.equals(vote.getCardId(), moderatorCardId))
                 .forEach(vote -> playerIdPoints.put(vote.getPlayerId(), 3));
     }
+
+    public List<Player> getPlayers(Long gameId) {
+        return playerRepository.findAllByGame(gameRepository.findByIdOrThrow(gameId));
+    }
 }
