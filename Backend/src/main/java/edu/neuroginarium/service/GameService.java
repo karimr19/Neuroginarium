@@ -7,6 +7,7 @@ import edu.neuroginarium.exception.PlayersCntIsMaxException;
 import edu.neuroginarium.model.*;
 import edu.neuroginarium.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -206,8 +207,18 @@ public class GameService {
         if (isVotingFinished) {
             var round = gameRoundRepository.findByIdOrThrow(roundId);
             round.votingMade();
+            updatePlayersPoints(roundId, card);
         }
         return isVotingFinished;
+    }
+
+    private void updatePlayersPoints(Long roundId, Card card) {
+        var playerPointsForRoundMap = getPlayerPointsMapForRound(roundId);
+        card.getGame().getPlayers()
+                .forEach(p -> p.setPoints(
+                                p.getPoints() + playerPointsForRoundMap.getOrDefault(p.getId(), 0)
+                        )
+                );
     }
 
     private Boolean isVotingFinished(Long roundId, Game game) {
@@ -223,17 +234,23 @@ public class GameService {
     }
 
     public List<PlayerPointsDto> getRoundPoints(Long roundId) {
+        HashMap<Long, Integer> playerIdPoints = getPlayerPointsMapForRound(roundId);
+        return playerIdPoints.entrySet().stream()
+                .map(idPoints -> new PlayerPointsDto()
+                        .setPlayerId(idPoints.getKey())
+                        .setPoints(idPoints.getValue())
+                ).toList();
+    }
+
+    @NotNull
+    private HashMap<Long, Integer> getPlayerPointsMapForRound(Long roundId) {
         List<Vote> votes = voteRepository.findAllByRoundId(roundId);
         var round = gameRoundRepository.findByIdOrThrow(roundId);
         Long moderatorCardId = round.getCardId();
         var playerIdPoints = new HashMap<Long, Integer>();
         setPointsForGuesses(votes, moderatorCardId, playerIdPoints);
         setPointsForCards(votes, moderatorCardId, round.getAssociationCreatorId(), playerIdPoints);
-        return playerIdPoints.entrySet().stream()
-                .map(idPoints -> new PlayerPointsDto()
-                        .setPlayerId(idPoints.getKey())
-                        .setPoints(idPoints.getValue())
-                ).toList();
+        return playerIdPoints;
     }
 
     private static void setPointsForCards(List<Vote> votes, Long moderatorCardId, Long moderatorId,
