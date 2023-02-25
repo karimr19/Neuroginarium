@@ -40,4 +40,8 @@ public class Card {
         }
         this.setStatus(CardStatus.ON_TABLE);
     }
+
+    public void makePlayed() {
+        this.setStatus(CardStatus.PLAYED);
+    }
 }

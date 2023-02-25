@@ -208,8 +208,43 @@ public class GameService {
             var round = gameRoundRepository.findByIdOrThrow(roundId);
             round.votingMade();
             updatePlayersPoints(roundId, card);
+            removeCards(round.getGame());
+            round.finish();
+            // TODO конец игры?
+            if (round.getGame().getRound() < CardService.)
+                startNewRound(round.getGame());
         }
         return isVotingFinished;
+    }
+
+    private void removeCards(Game game) {
+        cardRepository.findAllByGameAndStatus(game, CardStatus.ON_TABLE).forEach(Card::makePlayed);
+    }
+
+    private void startNewRound(Game game) {
+        addNewCardToPlayers(game);
+        createNewRound(game);
+    }
+
+    private void createNewRound(Game game) {
+        game.startNewRound();
+        var newRound = new GameRound().setGame(game)
+                .setAssociationCreatorId(
+                        findPlayerIdByGameIdAndOrder(game.getId(), game.getRound() % game.getPlayersCnt())
+                );
+        gameRoundRepository.save(newRound);
+    }
+
+    private void addNewCardToPlayers(Game game) {
+        var players = game.getPlayers();
+        for (var player : players) {
+            var optCard = cardRepository.findFirstByPlayerIdAndStatus(player.getId(),
+                    CardStatus.IN_CARD_DECK);
+            if (optCard.isEmpty()) {
+                throw new InternalException("No cards in card deck left for PLAYER[" + player.getId() + "]");
+            }
+            optCard.get().giveCardToPlayer();
+        }
     }
 
     private void updatePlayersPoints(Long roundId, Card card) {
