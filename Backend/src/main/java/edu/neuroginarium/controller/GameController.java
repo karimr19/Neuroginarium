@@ -3,6 +3,7 @@ package edu.neuroginarium.controller;
 import edu.neuroginarium.dto.PlayerPointsDto;
 import edu.neuroginarium.model.Card;
 import edu.neuroginarium.model.GameRound;
+import edu.neuroginarium.model.Player;
 import edu.neuroginarium.model.Vote;
 import edu.neuroginarium.service.GameService;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +85,10 @@ public class GameController {
     @GetMapping(value = "/rounds/{round_id}/get_points")
     public List<PlayerPointsDto> getRoundPoints(@PathVariable("round_id") Long roundId) {
         return gameService.getRoundPoints(roundId);
+    }
+
+    @GetMapping(value = "{id}/players")
+    public List<Player> getPlayers(@PathVariable("id") Long gameId) {
+        return gameService.getPlayers(gameId);
     }
 }
