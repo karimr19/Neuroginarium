@@ -18,6 +18,8 @@ public class Player {
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(name="game_id", nullable = false)
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
+
+    private int points;
 }
