@@ -1,6 +1,7 @@
 package edu.neuroginarium.controller;
 
 import edu.neuroginarium.dto.PlayerPointsDto;
+import edu.neuroginarium.dto.VotingResultDto;
 import edu.neuroginarium.model.Card;
 import edu.neuroginarium.model.GameRound;
 import edu.neuroginarium.model.Player;
@@ -66,9 +67,9 @@ public class GameController {
     }
 
     @PostMapping("/rounds/{round_id}/vote")
-    public Boolean vote(@PathVariable("round_id") Long roundId,
-                        @RequestParam(name = "player_id") Long playerId,
-                        @RequestParam(name = "card_id") Long cardId) {
+    public VotingResultDto vote(@PathVariable("round_id") Long roundId,
+                                @RequestParam(name = "player_id") Long playerId,
+                                @RequestParam(name = "card_id") Long cardId) {
         return gameService.vote(playerId, cardId, roundId);
     }
 

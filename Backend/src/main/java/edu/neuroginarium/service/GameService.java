@@ -1,6 +1,7 @@
 package edu.neuroginarium.service;
 
 import edu.neuroginarium.dto.PlayerPointsDto;
+import edu.neuroginarium.dto.VotingResultDto;
 import edu.neuroginarium.exception.InternalException;
 import edu.neuroginarium.exception.NotFoundException;
 import edu.neuroginarium.exception.PlayersCntIsMaxException;
@@ -193,7 +194,7 @@ public class GameService {
         return cardRepository.findAllByGameAndStatus(gameRepository.findByIdOrThrow(gameId), CardStatus.ON_TABLE);
     }
 
-    public Boolean vote(Long playerId, Long cardId, Long roundId) {
+    public VotingResultDto vote(Long playerId, Long cardId, Long roundId) {
         var card = cardRepository.findByIdOrThrow(cardId);
         if (Objects.equals(card.getPlayerId(), playerId)) {
             throw new InternalException("Player can't vote for his cart! PLAYER[" + playerId + "]");
@@ -210,11 +211,15 @@ public class GameService {
             updatePlayersPoints(roundId, card);
             removeCards(round.getGame());
             round.finish();
-            // TODO конец игры?
-            if (round.getGame().getRound() < CardService.)
+            var gameRoundsCnt = CardService.GAME_CIRCLES_CNT * round.getGame().getRound();
+            if (round.getGame().getRound() < gameRoundsCnt) {
                 startNewRound(round.getGame());
+            } else {
+                round.getGame().finish();
+            }
         }
-        return isVotingFinished;
+        return new VotingResultDto().setIsVotingFinished(isVotingFinished)
+                .setIsGameFinished(card.getGame().getStatus().equals(GameStatus.FINISHED));
     }
 
     private void removeCards(Game game) {

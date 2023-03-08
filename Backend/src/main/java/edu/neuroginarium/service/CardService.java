@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class CardService {
     public final static Integer CARDS_ON_HANDS_CNT = 7;
-    // TODO исправить расчет кол-ва карт для генерации
-    public final static Integer GAME_ROUNDS_CNT = 3;
-    private final static Integer CARDS_FOR_PLAYER_CNT = CARDS_ON_HANDS_CNT - 1 + GAME_ROUNDS_CNT;
+    public final static Integer GAME_CIRCLES_CNT = 3;
     // TODO поменять baseUrl
     private final static String SERVER_URL = "http://localhost:8080";
     private final CardRepository cardRepository;
@@ -52,7 +50,8 @@ public class CardService {
     public List<Card> generateCards(Game game) {
         WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec =
                 (WebClient.UriSpec<WebClient.RequestBodySpec>) webClient.get();
-        int cardsCnt = game.getPlayersCnt() * CARDS_FOR_PLAYER_CNT;
+        int cardsCnt = game.getPlayersCnt() * (CARDS_ON_HANDS_CNT - 1) +
+                game.getPlayersCnt() * game.getPlayersCnt() * GAME_CIRCLES_CNT;
         WebClient.RequestBodySpec bodySpec = uriSpec.uri("/pictures/" + cardsCnt);
         var headersSpec = bodySpec.bodyValue("");
         Mono<String> response = headersSpec.exchangeToMono(r -> {
