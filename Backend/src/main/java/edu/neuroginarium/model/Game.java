@@ -45,4 +45,8 @@ public class Game {
     public void startNewRound() {
         this.setRound(round + 1);
     }
+
+    public void finish() {
+        this.setStatus(GameStatus.FINISHED);
+    }
 }
