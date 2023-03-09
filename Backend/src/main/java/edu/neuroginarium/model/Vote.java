@@ -1,9 +1,6 @@
 package edu.neuroginarium.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -12,9 +9,10 @@ import lombok.experimental.Accessors;
 @Setter
 @Entity
 @Accessors(chain = true)
+@SequenceGenerator(allocationSize = 1, name = "vote_seq", sequenceName = "vote_seq")
 public class Vote {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vote_seq")
     private Long id;
 
     private Long playerId;

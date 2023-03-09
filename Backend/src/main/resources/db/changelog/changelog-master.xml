@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <include file="db/changelog/table/card/card.sql"/>
+    <include file="db/changelog/table/email_token/email_token.sql"/>
+    <include file="db/changelog/table/game/game.sql"/>
+    <include file="db/changelog/table/game_round/game_round.sql"/>
+    <include file="db/changelog/table/moderator_queue_order_item/moderator_queue_order_item.sql"/>
+    <include file="db/changelog/table/player/player.sql"/>
+    <include file="db/changelog/table/user/user.sql"/>
+    <include file="db/changelog/table/vote/vote.sql"/>
+
+    <include file="db/changelog/sequence/card_sequence.sql"/>
+    <include file="db/changelog/sequence/email_token_sequence.sql"/>
+    <include file="db/changelog/sequence/game_sequence.sql"/>
+    <include file="db/changelog/sequence/game_round_sequence.sql"/>
+    <include file="db/changelog/sequence/moderator_queue_order_item_sequence.sql"/>
+    <include file="db/changelog/sequence/player_sequence.sql"/>
+    <include file="db/changelog/sequence/user_sequence.sql"/>
+    <include file="db/changelog/sequence/vote_sequence.sql"/>
+
+</databaseChangeLog>

@@ -97,7 +97,7 @@ public class GameService {
         game.getPlayers().forEach(player ->
                 moderatorQueueOrderItemRepository.save(new ModeratorQueueOrderItem()
                         .setPlayerId(player.getId())
-                        .setOrder(order.getAndIncrement())
+                        .setQueueOrder(order.getAndIncrement())
                         .setGameId(game.getId())
                 ));
     }
