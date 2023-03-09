@@ -9,9 +9,10 @@ import lombok.experimental.Accessors;
 @Setter
 @Entity
 @Accessors(chain = true)
+@SequenceGenerator(allocationSize = 1, name = "card_seq", sequenceName = "card_seq")
 public class Card {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_seq")
     private Long id;
 
     private String image;

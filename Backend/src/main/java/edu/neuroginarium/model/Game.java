@@ -13,17 +13,19 @@ import java.util.Set;
 @Setter
 @Entity
 @Accessors(chain = true)
+@SequenceGenerator(allocationSize = 1, name = "game_seq", sequenceName = "game_seq")
 public class Game {
     public static final int MAX_PLAYERS_CNT = 7;
     public static final int MIN_PLAYERS_CNT = 4;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_seq")
     private Long id;
 
     private Boolean isAutoGame;
 
     private int playersCnt;
 
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
 
     @OneToMany(mappedBy = "game")

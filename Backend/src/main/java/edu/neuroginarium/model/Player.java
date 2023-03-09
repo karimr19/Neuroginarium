@@ -10,9 +10,10 @@ import lombok.experimental.Accessors;
 @Setter
 @Entity
 @Accessors(chain = true)
+@SequenceGenerator(allocationSize = 1, name = "player_seq", sequenceName = "player_seq")
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_seq")
     private Long id;
 
     private Long userId;

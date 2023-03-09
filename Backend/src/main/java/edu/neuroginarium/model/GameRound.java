@@ -9,15 +9,17 @@ import lombok.experimental.Accessors;
 @Setter
 @Entity
 @Accessors(chain = true)
+@SequenceGenerator(allocationSize = 1, name = "game_round_seq", sequenceName = "game_round_seq")
 public class GameRound {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_round_seq")
     private Long id;
 
     private Long associationCreatorId;
 
     private String association;
 
+    @Enumerated(EnumType.STRING)
     private GameRoundStatus status = GameRoundStatus.STARTED;
 
     @ManyToOne
